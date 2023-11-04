@@ -20,11 +20,24 @@
             width: 100%;
         }
 
-        #map_credit {
+        #map_credit_1 {
             display: inline-block;
             position: absolute;
             bottom: 0;
             right: 0;
+            padding: 0.2em;
+            margin: 0;
+            background-color: rgba(255, 255, 255, .7);
+            font-size: 70%;
+            color: black;
+            z-index: 10000;
+        }
+
+        #map_credit_2 {
+            display: inline-block;
+            position: absolute;
+            bottom: 0;
+            right: 260px;
             padding: 0.2em;
             margin: 0;
             background-color: rgba(255, 255, 255, .7);
@@ -37,7 +50,8 @@
 
 <body>
     <div id="map"></div>
-    <a id=map_credit href=https://github.com/Project-PLATEAU/plateau-streaming-tutorial>3D都市モデルPLATEAU配信サービス（試験運用）</a>
+    <a id=map_credit_1 href=https://github.com/Project-PLATEAU/plateau-streaming-tutorial>3D都市モデルPLATEAU配信サービス（試験運用）</a>
+    <a id=map_credit_2 href=https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A29-v2_1.html>国土数値情報 用途地域データ</a>
     <script>
         // GeoJSON
         const data = d3.json('./A29-19_13104.geojson');
@@ -71,9 +85,9 @@
             ],
             layers: [
                 new deck.TileLayer({
-                    data: "https://gic-plateau.s3.ap-northeast-1.amazonaws.com/2020/ortho/tiles/{z}/{x}/{y}.png",
+                    data: "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
                     minZoom: 0,
-                    maxZoom: 19,
+                    maxZoom: 18,
                     tileSize: 256,
                     renderSubLayers: props => new deck.BitmapLayer(props, {
                         data: null,
