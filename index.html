@@ -118,7 +118,7 @@
                     operation: 'terrain+draw'
                 }),
                 new deck.GeoJsonLayer({
-                    id: 'youtochiiki',
+                    id: 'youtochiiki-1',
                     data: data,
                     stroked: false,
                     filled: true,
@@ -153,6 +153,42 @@
                     },
                     opacity: 0.4,
                     extensions: [new deck._TerrainExtension()]
+                }),
+                new deck.GeoJsonLayer({
+                    id: 'youtochiiki-2',
+                    data: data,
+                    stroked: false,
+                    filled: true,
+                    getFillColor: ({ properties }) => {
+                        const { A29_004 } = properties;
+                        if (A29_004 == 1)
+                            return [0, 178, 133]
+                        else if (A29_004 == 2)
+                            return [145, 207, 185]
+                        else if (A29_004 == 3)
+                            return [120, 206, 63]
+                        else if (A29_004 == 4)
+                            return [173, 223, 33]
+                        else if (A29_004 == 5)
+                            return [235, 238, 94]
+                        else if (A29_004 == 6)
+                            return [255, 210, 182]
+                        else if (A29_004 == 7)
+                            return [255, 166, 56]
+                        else if (A29_004 == 8)
+                            return [255, 176, 195]
+                        else if (A29_004 == 9)
+                            return [255, 89, 61]
+                        else if (A29_004 == 10)
+                            return [167, 148, 197]
+                        else if (A29_004 == 11)
+                            return [185, 234, 255]
+                        else if (A29_004 == 12)
+                            return [95, 197, 251]
+                        else if (A29_004 == 21)
+                            return [196, 215, 155]
+                    },
+                    opacity: 0.4
                 })
             ]
         });
