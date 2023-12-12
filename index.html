@@ -20,40 +20,94 @@
             width: 100%;
         }
 
-        #map_credit_1 {
-            display: inline-block;
+        #credits {
             position: absolute;
             bottom: 0;
             right: 0;
-            padding: 0.2em;
-            margin: 0;
-            background-color: rgba(255, 255, 255, .7);
-            font-size: 70%;
-            color: black;
-            z-index: 10000;
+            padding: 2px;
+            font-size: 12px;
+            color: #000000;
+            text-shadow: none;
+            background-color: rgba(255, 255, 255, 0.7);
         }
 
-        #map_credit_2 {
-            display: inline-block;
+        #credits a {
+            color: #000000;
+            pointer-events: auto;
+        }
+
+        .legend {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 3px;
+            bottom: 40px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+            font: 12px/14px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            padding: 10px;
             position: absolute;
-            bottom: 0;
-            right: 260px;
-            padding: 0.2em;
-            margin: 0;
-            background-color: rgba(255, 255, 255, .7);
-            font-size: 70%;
-            color: black;
-            z-index: 10000;
+            right: 10px;
+            z-index: 1;
+            line-height: 20px;
+            height: auto;
+        }
+
+        .legend h4 {
+            margin: 0 0 10px;
+        }
+
+        .legend div span {
+            border-radius: 50%;
+            display: inline-block;
+            height: 15px;
+            margin-right: 10px;
+            width: 15px;
+            color: orangered
+        }
+
+        .square {
+            width: 15px;
+            height: 15px;
         }
     </style>
 </head>
 
 <body>
     <div id="map"></div>
-    <a id=map_credit_1 href=https://github.com/Project-PLATEAU/plateau-streaming-tutorial>3D都市モデルPLATEAU配信サービス（試験運用）</a>
-    <a id=map_credit_2 href=https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A29-v2_1.html>国土数値情報 用途地域データ</a>
+    <div id="credits"></div>
+    <div id="legend-youtochiiki" style="display:block;" class='legend'>
+        <h4>用途地域</h4>
+        <div class="square" style='background-color: rgb(0, 178, 133); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">第一種低層住居専用地域</span><br>
+        <div class="square" style='background-color: rgb(145, 207, 185); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">第二種低層住居専用地域</span><br>
+        <div class="square" style='background-color: rgb(120, 206, 63); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">第一種中高層住居専用地域</span><br>
+        <div class="square" style='background-color: rgb(173, 223, 33); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">第二種中高層住居専用地域</span><br>
+        <div class="square" style='background-color: rgb(235, 238, 94); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">第一種住居地域</span><br>
+        <div class="square" style='background-color: rgb(255, 210, 182); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">第二種住居地域</span><br>
+        <div class="square" style='background-color: rgb(255, 166, 56); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">準住居地域</span><br>
+        <div class="square" style='background-color: rgb(255, 176, 195); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">近隣商業地域</span><br>
+        <div class="square" style='background-color: rgb(255, 89, 61); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">商業地域</span><br>
+        <div class="square" style='background-color: rgb(167, 148, 197); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">準工業地域</span><br>
+        <div class="square" style='background-color: rgb(185, 234, 255); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">工業地域</span><br>
+        <div class="square" style='background-color: rgb(95, 197, 251); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">工業専用地域</span><br>
+        <div class="square" style='background-color: rgb(196, 215, 155); display: inline-block;'>
+        </div><span style="display: inline-block; margin-left: 5px;">田園住居地域</span><br>
+    </div>
     <script>
-        // GeoJSON
+        // 
+        const creditsElement = document.getElementById('credits');
+        creditsElement.innerHTML = `<a href="https://github.com/Project-PLATEAU/plateau-streaming-tutorial" target="_blank">3D都市モデルPLATEAU配信サービス（試験運用）</a> | <a href="https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-A29-v2_1.html" target="_blank">国土数値情報 用途地域データ（2019年）</a> | <a href="https://maps.gsi.go.jp/development/ichiran.html#pale2" target="_blank">地理院タイル（淡色地図）</a>`;
+
+        // 用途地域（GeoJSON）
         const data = d3.json('./A29-19_13104.geojson');
 
         // 環境光
@@ -78,12 +132,14 @@
                 zoom: 16,
                 bearing: 0,
                 pitch: 60,
+                maxPitch: 85
             },
             controller: { inertia: true },
             effects: [
                 new deck.LightingEffect({ ambientLight, directionalLight })
             ],
             layers: [
+                // 地理院タイル
                 new deck.TileLayer({
                     data: "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
                     minZoom: 0,
@@ -95,6 +151,7 @@
                         bounds: (({ west, south, east, north }) => [west, south, east, north])(props.tile.bbox),
                     }),
                 }),
+                // PLATEAU-3DTiles
                 new deck.Tile3DLayer({
                     id: "tile3dlayer",
                     data: 'https://plateau.geospatial.jp/main/data/3d-tiles/bldg/13100_tokyo/13104_shinjuku-ku/low_resolution/tileset.json', // 新宿区
@@ -117,6 +174,7 @@
                     },
                     operation: 'terrain+draw'
                 }),
+                // 用途地域（TerrainExtension）
                 new deck.GeoJsonLayer({
                     id: 'youtochiiki-1',
                     data: data,
@@ -151,9 +209,10 @@
                         else if (A29_004 == 21)
                             return [196, 215, 155]
                     },
-                    opacity: 0.4,
+                    opacity: 0.5,
                     extensions: [new deck._TerrainExtension()]
                 }),
+                // 用途地域
                 new deck.GeoJsonLayer({
                     id: 'youtochiiki-2',
                     data: data,
@@ -188,7 +247,7 @@
                         else if (A29_004 == 21)
                             return [196, 215, 155]
                     },
-                    opacity: 0.4
+                    opacity: 0.7
                 })
             ]
         });
